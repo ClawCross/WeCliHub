@@ -242,7 +242,7 @@ A typical workflow:
 
 ## 📄 License
 
-MIT
+Apache License 2.0
 
 ---
 
