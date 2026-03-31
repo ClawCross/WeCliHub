@@ -40,6 +40,8 @@ const translations: Record<string, Record<Locale, string>> = {
   // ── Header ──
   "header.magicPrompt": { en: "Magic Prompt", zh: "魔法提示" },
   "header.visitGithub": { en: "Visit our GitHub!", zh: "访问我们的 GitHub!" },
+  "header.explore": { en: "Explore", zh: "浏览" },
+  "header.intro": { en: "Intro", zh: "介绍" },
   "header.publish": { en: "Publish", zh: "发布" },
   "header.signIn": { en: "Sign in", zh: "登录" },
   "header.signedInAs": { en: "Signed in as", zh: "已登录为" },
@@ -63,6 +65,7 @@ const translations: Record<string, Record<Locale, string>> = {
   "main.presetsAndCommunity": { en: "Presets + Community", zh: "预设 + 社区" },
   "main.all": { en: "All", zh: "全部" },
   "main.loading": { en: "Loading workflows...", zh: "加载工作流中..." },
+  "main.loadingFailed": { en: "Failed to load workflows.", zh: "加载工作流失败。" },
   "main.noWorkflows": { en: "No workflows found.", zh: "未找到工作流。" },
   "main.by": { en: "by", zh: "作者" },
   "main.official": { en: "Official", zh: "官方" },

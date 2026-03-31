@@ -2,9 +2,8 @@
 
 import { ArrowLeft, Edit, ExternalLink, Github, LogOut, Plus, Settings, Star, Trash2, UserRound, X } from "lucide-react";
 
-import { LanguageToggle } from "@/components/teamclawhub/language-toggle";
+import { SiteHeader } from "@/components/teamclawhub/site-header";
 import { StableI18nText } from "@/components/teamclawhub/stable-i18n-text";
-import { ThemeToggle } from "@/components/teamclawhub/theme-toggle";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
@@ -12,7 +11,6 @@ import type { Locale } from "@/lib/i18n";
 import { translateValue, useI18n } from "@/lib/i18n";
 import { pickWorkflowTag, pickWorkflowText } from "@/lib/workflow-localization";
 
-import { TeamClawHubLogo } from "@/components/teamclawhub/logo";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -262,42 +260,24 @@ export function ProfilePage({ login }: { login: string }) {
 
   return (
     <div className="min-h-screen">
-      <header className="sticky top-0 z-30 border-b border-border/70 bg-background/90 backdrop-blur">
-        <div className="container flex h-16 items-center gap-3">
-          <Link href="/" className="text-xl font-bold text-primary">
-            <TeamClawHubLogo />
-          </Link>
-          <div className="ml-auto flex items-center gap-2">
-            <ThemeToggle />
-            <LanguageToggle />
-            <a
-              href="https://github.com/Teamclaw-hub/TeamClaw.git"
-              target="_blank"
-              rel="noreferrer"
-              className={buttonVariants({ variant: "outline" })}
-            >
-              <Github className="h-4 w-4" />
-              <StableI18nText translationKey="header.teamclaw" />
-            </a>
-            {currentUser ? (
-              <Button variant="outline" className="h-10 gap-2" disabled>
-                {currentUser.avatar_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={currentUser.avatar_url} alt={currentUser.login} className="h-6 w-6 rounded-full" />
-                ) : (
-                  <UserRound className="h-4 w-4" />
-                )}
-                {currentUser.name || currentUser.login}
-              </Button>
+      <SiteHeader activePage="explore">
+        {currentUser ? (
+          <Button variant="outline" className="h-10 gap-2" disabled>
+            {currentUser.avatar_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={currentUser.avatar_url} alt={currentUser.login} className="h-6 w-6 rounded-full" />
             ) : (
-              <a href="/auth/github" className={buttonVariants({ variant: "outline" })}>
-                <Github className="h-4 w-4" />
-                <StableI18nText translationKey="header.signIn" />
-              </a>
+              <UserRound className="h-4 w-4" />
             )}
-          </div>
-        </div>
-      </header>
+            {currentUser.name || currentUser.login}
+          </Button>
+        ) : (
+          <a href="/auth/github" className={buttonVariants({ variant: "outline" })}>
+            <Github className="h-4 w-4" />
+            <StableI18nText translationKey="header.signIn" />
+          </a>
+        )}
+      </SiteHeader>
 
       <main className="container py-8">
         <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">

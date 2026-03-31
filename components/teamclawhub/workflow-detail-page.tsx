@@ -2,9 +2,8 @@
 
 import { ArrowLeft, Copy, Download, Github, LogOut, Star, UserRound } from "lucide-react";
 
-import { LanguageToggle } from "@/components/teamclawhub/language-toggle";
+import { SiteHeader } from "@/components/teamclawhub/site-header";
 import { StableI18nText } from "@/components/teamclawhub/stable-i18n-text";
-import { ThemeToggle } from "@/components/teamclawhub/theme-toggle";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -16,8 +15,6 @@ import {
   pickWorkflowTag,
   pickWorkflowText
 } from "@/lib/workflow-localization";
-
-import { TeamClawHubLogo } from "@/components/teamclawhub/logo";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -1437,71 +1434,53 @@ export function WorkflowDetailPage({ workflowId }: { workflowId: string }) {
 
   return (
     <div className="min-h-screen">
-      <header className="sticky top-0 z-30 border-b border-border/70 bg-background/90 backdrop-blur">
-        <div className="container flex h-16 items-center gap-3">
-          <Link href="/" className="text-xl font-bold text-primary">
-            <TeamClawHubLogo />
-          </Link>
-          <div className="ml-auto flex items-center gap-2">
-            <ThemeToggle />
-            <LanguageToggle />
-            <a
-              href="https://github.com/Teamclaw-hub/TeamClaw.git"
-              target="_blank"
-              rel="noreferrer"
-              className={buttonVariants({ variant: "outline" })}
-            >
-              <Github className="h-4 w-4" />
-              <StableI18nText translationKey="header.teamclaw" />
-            </a>
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="h-10 gap-2">
-                    {user.avatar_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={user.avatar_url} alt={user.login} className="h-6 w-6 rounded-full" />
-                    ) : (
-                      <UserRound className="h-4 w-4" />
-                    )}
-                    {user.name || user.login}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>{t("header.signedInAs")} {user.login}</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link href={`/profile/${user.login}`}>
-                      <UserRound className="mr-2 h-4 w-4" />
-                      {t("header.myProfile")}
-                    </Link>
-                  </DropdownMenuItem>
-                  {user.html_url ? (
-                    <DropdownMenuItem asChild>
-                      <a href={user.html_url} target="_blank" rel="noreferrer">
-                        <Github className="mr-2 h-4 w-4" />
-                        {t("header.githubProfile")}
-                      </a>
-                    </DropdownMenuItem>
-                  ) : null}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <a href="/auth/logout">
-                      <LogOut className="mr-2 h-4 w-4" />
-                      {t("header.logout")}
-                    </a>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <a href="/auth/github" className={buttonVariants({ variant: "outline" })}>
-                <Github className="h-4 w-4" />
-                <StableI18nText translationKey="header.signIn" />
-              </a>
-            )}
-          </div>
-        </div>
-      </header>
+      <SiteHeader activePage="explore">
+        {user ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="h-10 gap-2">
+                {user.avatar_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={user.avatar_url} alt={user.login} className="h-6 w-6 rounded-full" />
+                ) : (
+                  <UserRound className="h-4 w-4" />
+                )}
+                {user.name || user.login}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>{t("header.signedInAs")} {user.login}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href={`/profile/${user.login}`}>
+                  <UserRound className="mr-2 h-4 w-4" />
+                  {t("header.myProfile")}
+                </Link>
+              </DropdownMenuItem>
+              {user.html_url ? (
+                <DropdownMenuItem asChild>
+                  <a href={user.html_url} target="_blank" rel="noreferrer">
+                    <Github className="mr-2 h-4 w-4" />
+                    {t("header.githubProfile")}
+                  </a>
+                </DropdownMenuItem>
+              ) : null}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <a href="/auth/logout">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  {t("header.logout")}
+                </a>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <a href="/auth/github" className={buttonVariants({ variant: "outline" })}>
+            <Github className="h-4 w-4" />
+            <StableI18nText translationKey="header.signIn" />
+          </a>
+        )}
+      </SiteHeader>
 
       <main className="container py-8">
         <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">

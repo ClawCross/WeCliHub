@@ -2,8 +2,6 @@
 
 import { Copy, Github, LogOut, Search, Settings, Sparkles, Upload, UserRound } from "lucide-react";
 
-import { LanguageToggle } from "@/components/teamclawhub/language-toggle";
-import { ThemeToggle } from "@/components/teamclawhub/theme-toggle";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
@@ -11,7 +9,7 @@ import type { Locale } from "@/lib/i18n";
 import { translateValue, useI18n } from "@/lib/i18n";
 import { pickWorkflowTag, pickWorkflowText } from "@/lib/workflow-localization";
 
-import { TeamClawHubLogo } from "@/components/teamclawhub/logo";
+import { SiteHeader } from "@/components/teamclawhub/site-header";
 import { StableI18nText } from "@/components/teamclawhub/stable-i18n-text";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -115,6 +113,7 @@ export function MainPage() {
   const [activeTag, setActiveTag] = useState("");
   const [user, setUser] = useState<GithubUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string>("");
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -167,8 +166,7 @@ export function MainPage() {
   const magicPromptText = t("main.magicPromptText");
 
   useEffect(() => {
-    checkAuth();
-    loadCategories();
+    void Promise.allSettled([checkAuth(), loadCategories()]);
   }, []);
 
   useEffect(() => {
@@ -184,37 +182,64 @@ export function MainPage() {
   }, [search, category, activeTag]);
 
   async function checkAuth() {
-    const response = await fetch("/api/auth/status");
-    const data = (await response.json()) as AuthResponse;
-    if (data.logged_in && data.user) {
-      setUser(data.user);
-      setAuthor(data.user.name || data.user.login);
-    } else {
+    try {
+      const response = await fetch("/api/auth/status");
+      if (!response.ok) {
+        throw new Error(`auth status ${response.status}`);
+      }
+      const data = (await response.json()) as AuthResponse;
+      if (data.logged_in && data.user) {
+        setUser(data.user);
+        setAuthor(data.user.name || data.user.login);
+        return;
+      }
+      setUser(null);
+      setAuthor("Anonymous");
+    } catch {
       setUser(null);
       setAuthor("Anonymous");
     }
   }
 
   async function loadCategories() {
-    const response = await fetch("/api/categories");
-    const data = (await response.json()) as string[];
-    setCategories(data);
+    try {
+      const response = await fetch("/api/categories");
+      if (!response.ok) {
+        throw new Error(`categories ${response.status}`);
+      }
+      const data = (await response.json()) as string[];
+      setCategories(data);
+    } catch {
+      setCategories([]);
+    }
   }
 
   async function loadWorkflows() {
     setLoading(true);
-    const url = new URL("/api/workflows", window.location.origin);
-    url.searchParams.set("search", search);
-    url.searchParams.set("category", category);
-    if (activeTag) {
-      url.searchParams.set("tag", activeTag);
-    }
+    setLoadError("");
 
-    const response = await fetch(url.toString());
-    const data = (await response.json()) as WorkflowsResponse;
-    setWorkflows(data.workflows ?? []);
-    setTotal(data.total ?? 0);
-    setLoading(false);
+    try {
+      const url = new URL("/api/workflows", window.location.origin);
+      url.searchParams.set("search", search);
+      url.searchParams.set("category", category);
+      if (activeTag) {
+        url.searchParams.set("tag", activeTag);
+      }
+
+      const response = await fetch(url.toString());
+      if (!response.ok) {
+        throw new Error(`workflows ${response.status}`);
+      }
+      const data = (await response.json()) as WorkflowsResponse;
+      setWorkflows(Array.isArray(data.workflows) ? data.workflows : []);
+      setTotal(typeof data.total === "number" ? data.total : 0);
+    } catch (error) {
+      setWorkflows([]);
+      setTotal(0);
+      setLoadError(getErrorMessage(error) || t("main.loadingFailed"));
+    } finally {
+      setLoading(false);
+    }
   }
 
   function openPublishModal() {
@@ -440,79 +465,61 @@ export function MainPage() {
 
   return (
     <div className="min-h-screen">
-      <header className="sticky top-0 z-30 border-b border-border/70 bg-background/90 backdrop-blur">
-        <div className="container flex h-16 items-center gap-4">
-          <Link href="/" className="text-xl font-bold text-primary">
-            <TeamClawHubLogo />
-          </Link>
-          <div className="ml-auto flex items-center gap-2">
-            <ThemeToggle />
-            <LanguageToggle />
-            <a
-              href="https://github.com/Teamclaw-hub/TeamClaw.git"
-              target="_blank"
-              rel="noreferrer"
-              className={buttonVariants({ variant: "outline" })}
-            >
-              <Github className="h-4 w-4" />
-              <StableI18nText translationKey="header.visitGithub" />
-            </a>
-            <Button variant="secondary" onClick={openPublishModal}>
-              <Upload className="h-4 w-4" />
-              <StableI18nText translationKey="header.publish" />
-            </Button>
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="h-10 gap-2">
-                    {user.avatar_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={user.avatar_url} alt={user.login} className="h-6 w-6 rounded-full" />
-                    ) : (
-                      <UserRound className="h-4 w-4" />
-                    )}
-                    {user.name || user.login}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>{t("header.signedInAs")} {user.login}</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link href={`/profile/${user.login}`}>
-                      <UserRound className="mr-2 h-4 w-4" />
-                      {t("header.myProfile")}
-                    </Link>
-                  </DropdownMenuItem>
-                  {user.html_url ? (
-                    <DropdownMenuItem asChild>
-                      <a href={user.html_url} target="_blank" rel="noreferrer">
-                        <Github className="mr-2 h-4 w-4" />
-                        {t("header.githubProfile")}
-                      </a>
-                    </DropdownMenuItem>
-                  ) : null}
-                  <DropdownMenuItem onClick={() => setSettingsOpen(true)}>
-                    <Settings className="mr-2 h-4 w-4" />
-                    {t("header.settings")}
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <a href="/auth/logout">
-                      <LogOut className="mr-2 h-4 w-4" />
-                      {t("header.logout")}
-                    </a>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <a href="/auth/github" className={buttonVariants({ variant: "outline" })}>
-                <Github className="h-4 w-4" />
-                <StableI18nText translationKey="header.signIn" />
-              </a>
-            )}
-          </div>
-        </div>
-      </header>
+      <SiteHeader activePage="explore">
+        <Button variant="secondary" onClick={openPublishModal}>
+          <Upload className="h-4 w-4" />
+          <StableI18nText translationKey="header.publish" />
+        </Button>
+        {user ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="h-10 gap-2">
+                {user.avatar_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={user.avatar_url} alt={user.login} className="h-6 w-6 rounded-full" />
+                ) : (
+                  <UserRound className="h-4 w-4" />
+                )}
+                {user.name || user.login}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>{t("header.signedInAs")} {user.login}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href={`/profile/${user.login}`}>
+                  <UserRound className="mr-2 h-4 w-4" />
+                  {t("header.myProfile")}
+                </Link>
+              </DropdownMenuItem>
+              {user.html_url ? (
+                <DropdownMenuItem asChild>
+                  <a href={user.html_url} target="_blank" rel="noreferrer">
+                    <Github className="mr-2 h-4 w-4" />
+                    {t("header.githubProfile")}
+                  </a>
+                </DropdownMenuItem>
+              ) : null}
+              <DropdownMenuItem onClick={() => setSettingsOpen(true)}>
+                <Settings className="mr-2 h-4 w-4" />
+                {t("header.settings")}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <a href="/auth/logout">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  {t("header.logout")}
+                </a>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <a href="/auth/github" className={buttonVariants({ variant: "outline" })}>
+            <Github className="h-4 w-4" />
+            <StableI18nText translationKey="header.signIn" />
+          </a>
+        )}
+      </SiteHeader>
 
       <main className="container py-8">
         <div className="mb-6 rounded-lg border border-primary/30 bg-primary/5 p-4">
@@ -574,6 +581,12 @@ export function MainPage() {
             </Button>
           ))}
         </div>
+
+        {loadError ? (
+          <div className="mt-4 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+            {t("main.loadingFailed")} {loadError !== t("main.loadingFailed") ? `(${loadError})` : ""}
+          </div>
+        ) : null}
 
         {loading ? (
           <div className="py-24 text-center text-muted-foreground">{t("main.loading")}</div>
