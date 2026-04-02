@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, Github, LogOut, Search, Settings, Sparkles, Upload, UserRound } from "lucide-react";
+import { Github, LogOut, Search, Settings, Sparkles, Upload, UserRound } from "lucide-react";
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -11,9 +11,9 @@ import { pickWorkflowTag, pickWorkflowText } from "@/lib/workflow-localization";
 
 import { SiteHeader } from "@/components/teamclawhub/site-header";
 import { StableI18nText } from "@/components/teamclawhub/stable-i18n-text";
+import { WorkflowCard } from "@/components/teamclawhub/workflow-card";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -69,28 +69,6 @@ const AGENT_TAG_OPTIONS = [
   { value: "review", labelKey: "tag.review" },
   { value: "custom", labelKey: "tag.custom" }
 ];
-
-function typeIcons(stepTypes?: string[]): string {
-  if (!stepTypes?.length) {
-    return "";
-  }
-
-  const counts = new Map<string, number>();
-
-  stepTypes.forEach((type) => {
-    counts.set(type, (counts.get(type) ?? 0) + 1);
-  });
-
-  return [...counts.entries()]
-    .map(([type, count]) => {
-      if (type === "expert") return `👤 x${count}`;
-      if (type === "parallel") return `⚡ x${count}`;
-      if (type === "manual") return `📝 x${count}`;
-      if (type === "all_experts") return `👥 x${count}`;
-      return `• x${count}`;
-    })
-    .join(" ");
-}
 
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error) {
@@ -594,65 +572,16 @@ export function MainPage() {
           <div className="py-24 text-center text-muted-foreground">{t("main.noWorkflows")}</div>
         ) : (
           <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {workflows.map((workflow) => {
-              const workflowTitle = pickWorkflowText(workflow, "title", workflow.title, currentLocale);
-              const workflowDescription = pickWorkflowText(workflow, "description", workflow.description, currentLocale);
-
-              return (
-                <Card key={workflow.id} className="group relative h-full transition-all hover:border-primary/60 hover:-translate-y-0.5 hover:shadow-lg">
-                  <Link href={`/workflow/${workflow.id}`} className="block">
-                    {workflow.is_dag ? (
-                      <div className="absolute right-3 top-3 rounded px-2 py-0.5 text-[11px] font-semibold bg-accent/15 text-accent border border-accent/30">
-                        DAG
-                      </div>
-                    ) : null}
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start gap-3">
-                        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-secondary border border-border text-2xl">
-                          {workflow.icon || "📦"}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <CardTitle className="line-clamp-1 text-base">{workflowTitle}</CardTitle>
-                          <CardDescription className="mt-0.5">
-                            {t("main.by")} {workflow.author} · {workflow.source === "preset" ? t("main.official") : t("main.community")}
-                          </CardDescription>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pb-3">
-                      <p className="line-clamp-2 text-sm text-muted-foreground">{workflowDescription}</p>
-                      <div className="mt-3 flex flex-wrap gap-1">
-                        {(workflow.tags || []).map((tag) => (
-                          <Badge key={tag} variant="outline">
-                            {workflow.localizations?.tags?.[tag]
-                              ? pickWorkflowTag(workflow, tag, currentLocale)
-                              : translateValue(t, "tag", tag)}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Link>
-                  <CardFooter className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 border-t border-border pt-3 text-xs text-muted-foreground">
-                    <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-2">
-                      <span className="inline-flex items-center gap-1">⭐ {workflow.stars || 0}</span>
-                      <span className="inline-flex items-center gap-1">🔀 {workflow.forks || 0}</span>
-                      <span className="inline-flex items-center gap-1">📊 {workflow.steps || 0} {t("main.steps")}</span>
-                      <span className="inline-flex items-center gap-1">{workflow.repeat ? `🔁 ${t("main.repeat")}` : `▶️ ${t("main.once")}`}</span>
-                      <span className="inline-flex min-w-0 items-center gap-1">{typeIcons(workflow.step_types)}</span>
-                    </div>
-                    <button
-                      type="button"
-                      className="inline-flex self-start whitespace-nowrap items-center gap-1 rounded-md border border-border px-2 py-0.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary hover:border-primary/40"
-                      title={t("main.copyDownloadCommand")}
-                      onClick={() => copyDownloadCommand(workflow)}
-                    >
-                      <Copy className="h-3 w-3" />
-                      {copiedId === workflow.id ? t("main.commandCopied") : t("main.copyDownloadCommand")}
-                    </button>
-                  </CardFooter>
-                </Card>
-              );
-            })}
+            {workflows.map((workflow) => (
+              <WorkflowCard
+                key={workflow.id}
+                copied={copiedId === workflow.id}
+                currentLocale={currentLocale}
+                onCopyDownload={copyDownloadCommand}
+                t={t}
+                workflow={workflow}
+              />
+            ))}
           </div>
         )}
       </main>

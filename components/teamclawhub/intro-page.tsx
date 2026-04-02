@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, Copy, Github } from "lucide-react";
 import { useState } from "react";
 
+import { PretextText } from "@/components/teamclawhub/pretext-text";
 import { SiteHeader } from "@/components/teamclawhub/site-header";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -398,6 +399,45 @@ const INTRO_COPY: Record<Locale, IntroCopy> = {
   }
 };
 
+function IntroHeading({
+  as = "h2",
+  text,
+  className,
+  idealLineCount = 2,
+  maxLines
+}: {
+  as?: "h1" | "h2" | "h3";
+  text: string;
+  className?: string;
+  idealLineCount?: number;
+  maxLines?: number;
+}) {
+  return (
+    <PretextText
+      as={as}
+      text={text}
+      className={className}
+      balance
+      idealLineCount={idealLineCount}
+      maxLines={maxLines}
+    />
+  );
+}
+
+function IntroBody({
+  as = "p",
+  text,
+  className,
+  maxLines
+}: {
+  as?: "p" | "div";
+  text: string;
+  className?: string;
+  maxLines?: number;
+}) {
+  return <PretextText as={as} text={text} className={className} maxLines={maxLines} />;
+}
+
 export function IntroPage() {
   const { locale } = useI18n();
   const [copied, setCopied] = useState(false);
@@ -426,17 +466,22 @@ export function IntroPage() {
                   {content.eyebrow}
                 </Badge>
 
-                <h1 className="mt-6 max-w-4xl text-4xl font-black tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-                  {content.title}
-                </h1>
+                <IntroHeading
+                  as="h1"
+                  text={content.title}
+                  className="mt-6 max-w-4xl text-4xl font-black tracking-tight text-foreground sm:text-5xl lg:text-6xl"
+                  idealLineCount={3}
+                />
 
-                <p className="mt-6 max-w-3xl text-base leading-7 text-muted-foreground sm:text-lg">
-                  {content.body}
-                </p>
+                <IntroBody
+                  text={content.body}
+                  className="mt-6 max-w-3xl text-base leading-7 text-muted-foreground sm:text-lg"
+                />
 
-                <p className="mt-4 max-w-3xl text-sm font-semibold uppercase tracking-[0.18em] text-primary/90">
-                  {content.bridgeLine}
-                </p>
+                <IntroBody
+                  text={content.bridgeLine}
+                  className="mt-4 max-w-3xl text-sm font-semibold uppercase tracking-[0.18em] text-primary/90"
+                />
 
                 <div className="mt-8 flex flex-wrap gap-3">
                   <Link href="/" className={buttonVariants({ variant: "default" })}>
@@ -490,10 +535,15 @@ export function IntroPage() {
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">{content.hubLabel}</p>
-                      <h2 className="mt-1 text-2xl font-bold tracking-tight text-foreground">{content.loopTitle}</h2>
-                      <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                        {content.loopBody}
-                      </p>
+                      <IntroHeading
+                        as="h2"
+                        text={content.loopTitle}
+                        className="mt-1 text-2xl font-bold tracking-tight text-foreground"
+                      />
+                      <IntroBody
+                        text={content.loopBody}
+                        className="mt-2 text-sm leading-6 text-muted-foreground"
+                      />
                     </div>
                   </div>
 
@@ -504,8 +554,17 @@ export function IntroPage() {
                         className="rounded-2xl border border-border/70 bg-background/80 p-4 shadow-sm"
                       >
                         <div className="text-2xl">{card.emoji}</div>
-                        <h3 className="mt-3 text-sm font-semibold text-foreground">{card.title}</h3>
-                        <p className="mt-2 text-sm leading-6 text-muted-foreground">{card.body}</p>
+                        <IntroHeading
+                          as="h3"
+                          text={card.title}
+                          className="mt-3 text-sm font-semibold text-foreground"
+                          idealLineCount={2}
+                          maxLines={2}
+                        />
+                        <IntroBody
+                          text={card.body}
+                          className="mt-2 text-sm leading-6 text-muted-foreground"
+                        />
                       </div>
                     ))}
                   </div>
@@ -515,7 +574,10 @@ export function IntroPage() {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">{content.installTitle}</p>
-                      <p className="mt-3 text-sm leading-6 text-muted-foreground">{content.installBody}</p>
+                      <IntroBody
+                        text={content.installBody}
+                        className="mt-3 text-sm leading-6 text-muted-foreground"
+                      />
                     </div>
                     <Button
                       variant="outline"
@@ -543,8 +605,15 @@ export function IntroPage() {
         <section className="container py-14 lg:py-20">
           <div className="max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">{content.mediaEyebrow}</p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{content.mediaTitle}</h2>
-            <p className="mt-4 text-base leading-7 text-muted-foreground">{content.mediaBody}</p>
+            <IntroHeading
+              as="h2"
+              text={content.mediaTitle}
+              className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
+            />
+            <IntroBody
+              text={content.mediaBody}
+              className="mt-4 text-base leading-7 text-muted-foreground"
+            />
           </div>
 
           <div className="mt-8 grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]">
@@ -560,8 +629,8 @@ export function IntroPage() {
                 </video>
               </div>
               <div className="p-6">
-                <h3 className="text-xl font-semibold text-foreground">{content.videoCardTitle}</h3>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">{content.videoCardBody}</p>
+                <IntroHeading as="h3" text={content.videoCardTitle} className="text-xl font-semibold text-foreground" />
+                <IntroBody text={content.videoCardBody} className="mt-3 text-sm leading-6 text-muted-foreground" />
               </div>
             </div>
 
@@ -571,12 +640,13 @@ export function IntroPage() {
                   src="/teamclaw/poster.png"
                   alt="TeamClaw poster"
                   fill
+                  sizes="(min-width: 1280px) 36rem, (min-width: 768px) 50vw, 100vw"
                   className="object-cover object-top"
                 />
               </div>
               <div className="border-t border-border/70 p-6">
-                <h3 className="text-xl font-semibold text-foreground">{content.posterCardTitle}</h3>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">{content.posterCardBody}</p>
+                <IntroHeading as="h3" text={content.posterCardTitle} className="text-xl font-semibold text-foreground" />
+                <IntroBody text={content.posterCardBody} className="mt-3 text-sm leading-6 text-muted-foreground" />
               </div>
             </div>
           </div>
@@ -585,8 +655,15 @@ export function IntroPage() {
         <section className="container py-14 lg:py-20">
           <div className="max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">{content.featureEyebrow}</p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{content.featureTitle}</h2>
-            <p className="mt-4 text-base leading-7 text-muted-foreground">{content.featureBody}</p>
+            <IntroHeading
+              as="h2"
+              text={content.featureTitle}
+              className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
+            />
+            <IntroBody
+              text={content.featureBody}
+              className="mt-4 text-base leading-7 text-muted-foreground"
+            />
           </div>
 
           <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -594,10 +671,14 @@ export function IntroPage() {
               <Card key={card.title} className="intro-panel border-border/70 bg-background/80">
                 <CardHeader>
                   <div className="text-3xl">{card.emoji}</div>
-                  <CardTitle className="text-xl">{card.title}</CardTitle>
+                  <CardTitle className="text-xl leading-tight">
+                    <PretextText as="span" text={card.title} className="block" balance idealLineCount={2} maxLines={2} />
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-sm leading-6 text-muted-foreground">{card.body}</CardDescription>
+                  <CardDescription className="text-sm leading-6 text-muted-foreground">
+                    <PretextText as="span" text={card.body} className="block" />
+                  </CardDescription>
                 </CardContent>
               </Card>
             ))}
@@ -609,16 +690,23 @@ export function IntroPage() {
             <div className="grid gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-start">
               <div className="max-w-xl">
                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">{content.evidenceEyebrow}</p>
-                <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{content.evidenceTitle}</h2>
-                <p className="mt-4 text-base leading-7 text-muted-foreground">{content.evidenceBody}</p>
+                <IntroHeading
+                  as="h2"
+                  text={content.evidenceTitle}
+                  className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
+                />
+                <IntroBody
+                  text={content.evidenceBody}
+                  className="mt-4 text-base leading-7 text-muted-foreground"
+                />
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
                 {content.evidenceCards.map((card) => (
                   <div key={card.title} className="rounded-3xl border border-border/70 bg-background/90 p-5 shadow-sm">
                     <div className="text-3xl">{card.emoji}</div>
-                    <h3 className="mt-4 text-lg font-semibold text-foreground">{card.title}</h3>
-                    <p className="mt-3 text-sm leading-6 text-muted-foreground">{card.body}</p>
+                    <IntroHeading as="h3" text={card.title} className="mt-4 text-lg font-semibold text-foreground" />
+                    <IntroBody text={card.body} className="mt-3 text-sm leading-6 text-muted-foreground" />
                   </div>
                 ))}
               </div>
@@ -629,15 +717,19 @@ export function IntroPage() {
         <section className="container py-14 lg:py-20">
           <div className="max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">{content.howEyebrow}</p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{content.howTitle}</h2>
+            <IntroHeading
+              as="h2"
+              text={content.howTitle}
+              className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
+            />
           </div>
 
           <div className="mt-8 grid gap-4 lg:grid-cols-3">
             {content.howSteps.map((step) => (
               <div key={step.number} className="rounded-3xl border border-border/70 bg-background/80 p-6 shadow-sm">
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary/80">{step.number}</p>
-                <h3 className="mt-4 text-xl font-semibold text-foreground">{step.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">{step.body}</p>
+                <IntroHeading as="h3" text={step.title} className="mt-4 text-xl font-semibold text-foreground" />
+                <IntroBody text={step.body} className="mt-3 text-sm leading-6 text-muted-foreground" />
               </div>
             ))}
           </div>
@@ -647,15 +739,19 @@ export function IntroPage() {
           <div className="container py-14 lg:py-20">
             <div className="max-w-3xl">
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">{content.audienceEyebrow}</p>
-              <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{content.audienceTitle}</h2>
+              <IntroHeading
+                as="h2"
+                text={content.audienceTitle}
+                className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
+              />
             </div>
 
             <div className="mt-8 grid gap-4 md:grid-cols-3">
               {content.audienceCards.map((card) => (
                 <div key={card.title} className="rounded-3xl border border-border/70 bg-background/90 p-5 shadow-sm">
                   <div className="text-3xl">{card.emoji}</div>
-                  <h3 className="mt-4 text-lg font-semibold text-foreground">{card.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-muted-foreground">{card.body}</p>
+                  <IntroHeading as="h3" text={card.title} className="mt-4 text-lg font-semibold text-foreground" />
+                  <IntroBody text={card.body} className="mt-3 text-sm leading-6 text-muted-foreground" />
                 </div>
               ))}
             </div>
@@ -666,12 +762,12 @@ export function IntroPage() {
           <div className="grid gap-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-start">
             <div className="rounded-[32px] border border-primary/15 bg-primary/5 p-7 shadow-[0_24px_60px_-36px_rgba(59,130,246,0.35)]">
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">{content.guardrailsEyebrow}</p>
-              <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground">{content.guardrailsTitle}</h2>
+              <IntroHeading as="h2" text={content.guardrailsTitle} className="mt-3 text-3xl font-bold tracking-tight text-foreground" />
               <div className="mt-6 space-y-3">
                 {content.guardrails.map((item) => (
                   <div key={item} className="flex items-start gap-3 rounded-2xl border border-border/60 bg-background/80 p-4">
                     <span className="mt-1 text-sm text-primary">•</span>
-                    <p className="text-sm leading-6 text-muted-foreground">{item}</p>
+                    <IntroBody text={item} className="text-sm leading-6 text-muted-foreground" />
                   </div>
                 ))}
               </div>
@@ -679,10 +775,15 @@ export function IntroPage() {
 
             <div className="intro-panel rounded-[32px] border border-border/70 p-7 shadow-[0_24px_60px_-36px_rgba(15,23,42,0.45)]">
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">{content.footerEyebrow}</p>
-              <h2 className="mt-3 max-w-2xl text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                {content.footerTitle}
-              </h2>
-              <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground">{content.footerBody}</p>
+              <IntroHeading
+                as="h2"
+                text={content.footerTitle}
+                className="mt-3 max-w-2xl text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
+              />
+              <IntroBody
+                text={content.footerBody}
+                className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground"
+              />
 
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link href="/" className={buttonVariants({ variant: "default" })}>
