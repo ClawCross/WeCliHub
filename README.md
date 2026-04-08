@@ -1,4 +1,4 @@
-# 🌊 WecliHub
+# 🌊 WeCliHub
 
 **A community marketplace for discovering, sharing, and distributing multi-agent OASIS workflows — built for [Wecli](https://github.com/WeCli/WeCli).**
 
