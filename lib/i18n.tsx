@@ -340,7 +340,7 @@ const translations: Record<string, Record<Locale, string>> = {
   "detail.dag": { en: "DAG", zh: "DAG" },
 
   // ── Metadata ──
-"meta.title": { en: "WecliHub — Workflow Community", zh: "WecliHub — 工作流社区" },
+"meta.title": { en: "WeCliHub — Workflow Community", zh: "WeCliHub — 工作流社区" },
 "meta.description": { en: "Community Workflow Marketplace", zh: "社区工作流市场" },
 };
 

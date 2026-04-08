@@ -5,7 +5,7 @@ import { I18nProvider } from "@/lib/i18n";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "WecliHub — Workflow Community",
+  title: "WeCliHub — Workflow Community",
   description: "Community Workflow Marketplace",
   metadataBase: new URL("https://wecli.net"),
   alternates: {
@@ -13,8 +13,8 @@ export const metadata: Metadata = {
   },
   openGraph: {
     url: "https://wecli.net",
-    siteName: "WecliHub",
-    title: "WecliHub — Workflow Community",
+    siteName: "WeCliHub",
+    title: "WeCliHub — Workflow Community",
     description: "Community Workflow Marketplace"
   },
   icons: {

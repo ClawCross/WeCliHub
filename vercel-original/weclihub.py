@@ -1,5 +1,5 @@
 """
-WecliHub — Community Workflow Marketplace
+WeCliHub — Community Workflow Marketplace
 ==========================================
 A GitHub-style community platform for browsing, sharing, and selecting
 OASIS workflow templates. Users can discover pre-built workflows, preview
@@ -151,7 +151,7 @@ PRESET_WORKFLOWS = [
         "id": "ml_code_test",
         "title": "ML Code Testing Pipeline",
         "description": "Automated machine learning code testing workflow with parallel agents analyzing why this pipeline is optimal for ML testing scenarios.",
-        "author": "WecliHub Team",
+        "author": "WeCliHub Team",
         "tags": ["ml", "code", "pipeline"],
         "category": "Engineering",
         "stars": 128,
@@ -183,7 +183,7 @@ edges:
         "id": "brainstorm_trio",
         "title": "Creative Brainstorm Trio",
         "description": "Three experts brainstorm in parallel, then a synthesis advisor summarizes the best ideas.",
-        "author": "WecliHub Team",
+        "author": "WeCliHub Team",
         "tags": ["brainstorm", "creative"],
         "category": "Ideation",
         "stars": 96,
@@ -215,7 +215,7 @@ edges:
         "id": "code_review_pipeline",
         "title": "Code Review Pipeline",
         "description": "Sequential code review with security, performance, and readability checks.",
-        "author": "WecliHub Team",
+        "author": "WeCliHub Team",
         "tags": ["code", "review", "pipeline"],
         "category": "Engineering",
         "stars": 203,
@@ -243,7 +243,7 @@ edges:
         "id": "business_debate",
         "title": "Business Strategy Debate",
         "description": "Economist, lawyer, and entrepreneur debate business strategy from different angles.",
-        "author": "WecliHub Team",
+        "author": "WeCliHub Team",
         "tags": ["debate", "brainstorm"],
         "category": "Business",
         "stars": 75,
@@ -285,7 +285,7 @@ edges:
         "id": "dag_research_pipeline",
         "title": "Research Analysis DAG",
         "description": "DAG-based research pipeline with parallel data collection and sequential analysis.",
-        "author": "WecliHub Team",
+        "author": "WeCliHub Team",
         "tags": ["pipeline", "data"],
         "category": "Research",
         "stars": 64,
@@ -452,7 +452,7 @@ def auth_github_callback():
     """Handle GitHub OAuth callback, exchange code for access token and fetch user info."""
     code = request.args.get("code")
     if not code:
-        return "<h2>Authorization failed: no code provided.</h2><a href='/'>Back to WecliHub</a>", 400
+        return "<h2>Authorization failed: no code provided.</h2><a href='/'>Back to WeCliHub</a>", 400
 
     # Exchange code for access token
     token_resp = http_requests.post(
@@ -516,7 +516,7 @@ def _require_github_login():
 
 @app.route("/")
 def index():
-    """Serve the WecliHub main page."""
+    """Serve the WeCliHub main page."""
     return render_template_string(MAIN_HTML)
 
 
@@ -1225,7 +1225,7 @@ MAIN_HTML = r"""<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WecliHub — Workflow Community</title>
+<title>WeCliHub — Workflow Community</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#238636;--accent-hover:#1f6feb;--green:#3fb950;--orange:#d29922;--pink:#f778ba;--radius:8px;--shadow:0 2px 8px rgba(0,0,0,.3)}
@@ -1320,7 +1320,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 </head>
 <body>
 <div class="header">
-  <div class="logo">🌊 <span>WecliHub</span></div>
+  <div class="logo">🌊 <span>WeCliHub</span></div>
   <nav>
     <a href="/" class="active">Explore</a>
     <a href="javascript:void(0)" onclick="openPublishModal()">📤 Publish</a>
@@ -1747,7 +1747,7 @@ DETAIL_HTML = r"""<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WecliHub — Workflow Detail</title>
+<title>WeCliHub — Workflow Detail</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--accent:#58a6ff;--accent2:#238636;--green:#3fb950;--orange:#d29922;--pink:#f778ba;--radius:8px}
@@ -1859,7 +1859,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 </head>
 <body>
 <div class="header">
-  <a href="/" style="text-decoration:none"><div class="logo">🌊 <span>WecliHub</span></div></a>
+  <a href="/" style="text-decoration:none"><div class="logo">🌊 <span>WeCliHub</span></div></a>
 </div>
 
 <div class="container">
@@ -1895,7 +1895,7 @@ async function loadDetail() {
     return;
   }
   const w = await resp.json();
-  document.title = `WecliHub — ${w.title}`;
+  document.title = `WeCliHub — ${w.title}`;
 
   const tagsHtml = (w.tags||[]).map(t => `<span class="badge tag">${t}</span>`).join('');
   const dagBadge = w.is_dag ? '<span class="badge dag">⚡ DAG Mode</span>' : '';
@@ -2598,7 +2598,7 @@ loadDetail();
 # ──────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     print("=" * 60)
-    print("  🌊 WecliHub — Workflow Community Platform")
+    print("  🌊 WeCliHub — Workflow Community Platform")
     print(f"  Open http://127.0.0.1:{WECLIHUB_PORT} in your browser")
     print("=" * 60)
     app.run(host="0.0.0.0", port=WECLIHUB_PORT, debug=True)

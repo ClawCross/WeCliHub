@@ -22,7 +22,7 @@ export function WecliHubLogo({
             textClassName
           )}
         >
-          WecliHub
+          WeCliHub
         </span>
       ) : null}
     </span>

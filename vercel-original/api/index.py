@@ -1,4 +1,4 @@
-"""Vercel Python entrypoint for legacy WecliHub Flask app."""
+"""Vercel Python entrypoint for legacy WeCliHub Flask app."""
 
 from pathlib import Path
 import importlib.util
