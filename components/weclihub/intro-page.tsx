@@ -120,12 +120,12 @@ const INTRO_COPY: Record<Locale, IntroCopy> = {
     copyPrompt: "Copy install prompt",
     copiedPrompt: "Copied",
     mediaEyebrow: "Media",
-    mediaTitle: "See the real product surfaces",
-    mediaBody: "These are the actual Wecli media assets from the main repository: the demo video and the README poster.",
-    videoCardTitle: "Wecli demo video",
-    videoCardBody: "A quick product walkthrough showing the runtime, UI, and orchestration story in motion.",
-    posterCardTitle: "README poster",
-    posterCardBody: "The core visual from the Wecli README, carried directly into WecliHub for consistent product storytelling.",
+    mediaTitle: "See it in action",
+    mediaBody: "Every visual on this page comes from the actual running system.",
+    videoCardTitle: "Demo Video",
+    videoCardBody: "A quick walkthrough of the runtime, UI, and orchestration working together.",
+    posterCardTitle: "Poster",
+    posterCardBody: "The core visual carried over from the main WeCli repository.",
     featureEyebrow: "Core product",
     featureTitle: "Why Wecli feels different",
     featureBody:
@@ -225,13 +225,12 @@ const INTRO_COPY: Record<Locale, IntroCopy> = {
         body: "Wecli is documented so coding agents can install, operate, and extend it with progressive disclosure."
       }
     ],
-    guardrailsEyebrow: "Guardrails",
-    guardrailsTitle: "Truthful constraints",
+    guardrailsEyebrow: "Prerequisites",
+    guardrailsTitle: "Before you start",
     guardrails: [
-      "Python 3.11+ is required.",
-      "An LLM provider is required for the core chat and OASIS value.",
-      "OpenClaw is optional, not mandatory onboarding.",
-      "Remote access still requires login even when localhost can be passwordless."
+      "An LLM provider (OpenAI, Anthropic, etc.) is needed for chat and OASIS orchestration.",
+      "OpenClaw integration is entirely optional — you can skip it during setup.",
+      "Remote access still requires authentication even when localhost runs passwordless."
     ],
     footerEyebrow: "Call to action",
     footerTitle: "Start on the Hub. Run it locally in Wecli.",
@@ -276,13 +275,13 @@ const INTRO_COPY: Record<Locale, IntroCopy> = {
     installPrompt: "Clone https://github.com/WeCli/WeCli.git，读取 SKILL.md，然后安装 Wecli。",
     copyPrompt: "复制安装提示词",
     copiedPrompt: "已复制",
-    mediaEyebrow: "媒体资产",
-    mediaTitle: "直接展示真实产品物料",
-    mediaBody: "下面使用的就是 Wecli 主仓库里的真实媒体资产：演示视频和 README 海报。",
-    videoCardTitle: "Wecli 演示视频",
-    videoCardBody: "用一段实际演示快速说明运行时、UI 和编排能力是如何联动工作的。",
-    posterCardTitle: "README 海报",
-    posterCardBody: "直接延续 Wecli README 的核心视觉，让 WecliHub 的宣传页和主仓库叙事保持一致。",
+    mediaEyebrow: "媒体",
+    mediaTitle: "看到的就是真实产品",
+    mediaBody: "页面上的每一张图都来自实际运行的系统。",
+    videoCardTitle: "演示视频",
+    videoCardBody: "快速了解运行时、UI 与编排能力的联动效果。",
+    posterCardTitle: "海报",
+    posterCardBody: "延续 WeCli 主仓库的核心视觉。",
     featureEyebrow: "核心产品",
     featureTitle: "为什么 Wecli 不一样",
     featureBody:
@@ -382,13 +381,12 @@ const INTRO_COPY: Record<Locale, IntroCopy> = {
         body: "Wecli 的文档采用 progressive disclosure，方便编码代理安装、运维和继续扩展。"
       }
     ],
-    guardrailsEyebrow: "真实约束",
-    guardrailsTitle: "需要明确的真实约束",
+    guardrailsEyebrow: "环境要求",
+    guardrailsTitle: "开始之前",
     guardrails: [
-      "需要 Python 3.11 及以上版本。",
-      "若想获得核心聊天与 OASIS 价值，仍需要配置 LLM 提供商。",
-      "OpenClaw 是可选集成，不是强制安装前提。",
-      "即使 localhost 可以免密，远程访问仍然需要登录。"
+      "聊天和 OASIS 编排需要配置 LLM 提供商（OpenAI、Anthropic 等）。",
+      "OpenClaw 是可选集成，安装时可以跳过。",
+      "即使 localhost 免密运行，远程访问仍需要身份验证。"
     ],
     footerEyebrow: "行动入口",
     footerTitle: "从 Hub 开始，在 Wecli 本地运行。",
@@ -622,7 +620,7 @@ export function IntroPage() {
                 <video
                   controls
                   preload="metadata"
-                  poster="/wecli/wecli-demo-poster.jpg"
+                  poster={locale === "en" ? "/wecli/wecli-demo-poster-en.png" : "/wecli/wecli-demo-poster.jpg"}
                   className="intro-demo-video h-full w-full object-contain"
                 >
                   <source src="/wecli/wecli-demo.mp4" type="video/mp4" />
@@ -637,8 +635,8 @@ export function IntroPage() {
             <div className="overflow-hidden rounded-[32px] border border-border/70 bg-background/90 shadow-[0_28px_70px_-42px_rgba(15,23,42,0.5)]">
               <div className="relative aspect-[9/16] w-full">
                 <Image
-                  src="/wecli/poster.jpg"
-                  alt="Wecli poster"
+                  src={locale === "en" ? "/wecli/poster_en.png" : "/wecli/poster.jpg"}
+                  alt="WeCli poster"
                   fill
                   sizes="(min-width: 1280px) 36rem, (min-width: 768px) 50vw, 100vw"
                   className="object-cover object-top"
