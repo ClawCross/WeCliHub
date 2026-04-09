@@ -1309,7 +1309,6 @@ export function WorkflowDetailPage({ workflowId }: { workflowId: string }) {
     const target = new URL(wecliReturnUrl);
     target.searchParams.set("hub_download_url", curlDownloadUrl);
     target.searchParams.set("team_name", workflowId);
-    target.searchParams.set("auto_import", "1");
     window.location.assign(target.toString());
   }
 

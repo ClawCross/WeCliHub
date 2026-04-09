@@ -317,7 +317,6 @@ export function MainPage() {
     const target = new URL(wecliReturnUrl || fallback);
     target.searchParams.set("hub_download_url", downloadUrl);
     target.searchParams.set("team_name", workflow.id);
-    target.searchParams.set("auto_import", "1");
     return target.toString();
   }
 
