@@ -1160,6 +1160,7 @@ export function WorkflowDetailPage({ workflowId }: { workflowId: string }) {
   const canvasCleanupRef = useRef<(() => void) | null>(null);
   const [siteOrigin, setSiteOrigin] = useState("");
   const [wecliReturnUrl, setWecliReturnUrl] = useState("");
+  const [wecliReturnOrigin, setWecliReturnOrigin] = useState("");
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
   const [expandedPersonas, setExpandedPersonas] = useState<Record<string, boolean>>({});
   const [user, setUser] = useState<GithubUser | null>(null);
@@ -1181,6 +1182,7 @@ export function WorkflowDetailPage({ workflowId }: { workflowId: string }) {
       setSiteOrigin(window.location.origin);
       const params = new URLSearchParams(window.location.search);
       setWecliReturnUrl((params.get("return_url") || "").trim());
+      setWecliReturnOrigin((params.get("return_origin") || "").trim());
     }
   }, []);
 
@@ -1306,6 +1308,20 @@ export function WorkflowDetailPage({ workflowId }: { workflowId: string }) {
 
   function importToWecli() {
     if (!wecliReturnUrl) return;
+    const payload = {
+      type: "wecli_hub_import",
+      hub_download_url: curlDownloadUrl,
+      team_name: workflowId
+    };
+    if (typeof window !== "undefined" && window.opener && wecliReturnOrigin) {
+      try {
+        window.opener.postMessage(payload, wecliReturnOrigin);
+        window.close();
+        return;
+      } catch {
+        // fall through to URL redirect
+      }
+    }
     const target = new URL(wecliReturnUrl);
     target.searchParams.set("hub_download_url", curlDownloadUrl);
     target.searchParams.set("team_name", workflowId);

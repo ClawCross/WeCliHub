@@ -94,6 +94,7 @@ export function MainPage() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string>("");
   const [wecliReturnUrl, setWecliReturnUrl] = useState("");
+  const [wecliReturnOrigin, setWecliReturnOrigin] = useState("");
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -153,6 +154,7 @@ export function MainPage() {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     setWecliReturnUrl((params.get("return_url") || "").trim());
+    setWecliReturnOrigin((params.get("return_origin") || "").trim());
   }, []);
 
   useEffect(() => {
@@ -332,12 +334,31 @@ export function MainPage() {
 
   function importToWecli(workflow: Workflow) {
     if (!wecliReturnUrl) return;
+    const payload = {
+      type: "wecli_hub_import",
+      hub_download_url: `${typeof window !== "undefined" ? window.location.origin : "https://wecli.net"}/api/workflows/${workflow.id}/download`,
+      team_name: workflow.id
+    };
+    if (typeof window !== "undefined" && window.opener && wecliReturnOrigin) {
+      try {
+        window.opener.postMessage(payload, wecliReturnOrigin);
+        window.close();
+        return;
+      } catch {
+        // fall through to URL redirect
+      }
+    }
     window.location.assign(buildWeCliImportUrl(workflow));
   }
 
   function buildWorkflowDetailHref(workflow: Workflow): string {
     if (!wecliReturnUrl) return `/workflow/${workflow.id}`;
-    return `/workflow/${workflow.id}?return_url=${encodeURIComponent(wecliReturnUrl)}`;
+    const params = new URLSearchParams();
+    params.set("return_url", wecliReturnUrl);
+    if (wecliReturnOrigin) {
+      params.set("return_origin", wecliReturnOrigin);
+    }
+    return `/workflow/${workflow.id}?${params.toString()}`;
   }
 
   async function submitPublish() {
